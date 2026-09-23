@@ -36,7 +36,7 @@ Nothing else to install: the hooks are a plain shell script that uses only `sh`,
 
 State lives in `~/.afterprompt/`: one small file per agent session, a log, and a separate browser profile that keeps your game progress. Your everyday browser profile is never touched.
 
-**Privacy:** only the agent name (`claude` or `codex`) and timestamps are sent to `afterprompt.inchi.dev`. Prompts, code, file paths, and transcripts never leave your machine.
+**Privacy:** only the selected game ID, agent name (`claude` or `codex`), and timestamps are sent to `afterprompt.inchi.dev`. Prompts, code, file paths, and transcripts never leave your machine.
 
 ## Settings
 
@@ -45,9 +45,10 @@ Set these environment variables, for example in the `env` block of `~/.claude/se
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `AFTERPROMPT_DELAY` | `60` | Seconds of work before the window opens |
+| `AFTERPROMPT_GAME` | `goo` | ID of the game to open |
 | `AFTERPROMPT_DISABLE` | — | `1` turns the plugin off without uninstalling |
 | `AFTERPROMPT_BROWSER` | auto | Path to a Chromium-family browser binary |
 | `AFTERPROMPT_URL` | `https://afterprompt.inchi.dev` | Game server (for local development) |
 | `AFTERPROMPT_HOME` | `~/.afterprompt` | Where state, logs, and the browser profile live |
 
-Ask Codex to “open an AfterPrompt practice game” at any time.
+Ask Codex to “open the Goo AfterPrompt practice game” at any time, or pass another installed game with `--game its-id`.

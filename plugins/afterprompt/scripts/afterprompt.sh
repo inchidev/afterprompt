@@ -8,10 +8,11 @@
 #   afterprompt.sh reap         (internal) quit the dedicated browser after completion
 #   afterprompt.sh open         open a practice window right now
 #
-# Hook commands accept `--agent <name>` (default: claude).
+# Commands accept `--game <id>` (default: goo). Hook commands also accept
+# `--agent <name>` (default: claude).
 #
-# Only the agent name and timestamps leave your machine. Prompts, code, and
-# transcripts are never sent anywhere.
+# Only the selected game ID, agent name, and timestamps leave your machine.
+# Prompts, code, and transcripts are never sent anywhere.
 
 BASE=$(printf '%s' "${AFTERPROMPT_URL:-https://afterprompt.inchi.dev}" | sed 's:/*$::')
 DELAY_SECONDS=${AFTERPROMPT_DELAY:-60}
@@ -28,12 +29,15 @@ SCRIPT=$0
 COMMAND=${1:-}
 SUB=${2:-}
 AGENT=${AFTERPROMPT_AGENT:-claude}
+GAME_ID=${AFTERPROMPT_GAME:-goo}
 while [ $# -gt 0 ]; do
   if [ "$1" = --agent ] && [ $# -gt 1 ]; then AGENT=$2; fi
+  if [ "$1" = --game ] && [ $# -gt 1 ]; then GAME_ID=$2; fi
   shift
 done
 # The agent name goes into a JSON body: keep it to plain letters.
 case $AGENT in '' | *[!a-z0-9-]*) AGENT=claude ;; esac
+case $GAME_ID in '' | *[!a-z0-9-]*) GAME_ID=goo ;; esac
 
 log() {
   mkdir -p "$HOME_DIR" 2>/dev/null
@@ -71,6 +75,13 @@ state_write() {
 complete_session() {
   curl -fsS -m 8 -X POST -H "Authorization: Bearer $2" "$BASE/api/sessions/$1/complete" >/dev/null ||
     log "complete failed for $1"
+}
+
+practice_url() {
+  response=$(curl -fsS -m 8 "$BASE/api/games/$GAME_ID") || return
+  slug=$(json_string "$response" slug)
+  case $slug in '' | *[!a-z0-9-]*) return 1 ;; esac
+  printf '%s/%s?popup=1' "$BASE" "$slug"
 }
 
 finish() {
@@ -176,13 +187,15 @@ hook_start() {
   [ "$(state_get "$state" prompt)" = "$prompt" ] && [ "$(state_get "$state" phase)" = waiting ] || return
 
   response=$(curl -fsS -m 8 -X POST -H 'Content-Type: application/json' \
-    -d "{\"agent\":\"$AGENT\"}" "$BASE/api/sessions") || {
+    -d "{\"gameId\":\"$GAME_ID\",\"agent\":\"$AGENT\"}" "$BASE/api/sessions") || {
     log "create session failed"
     return
   }
   id=$(json_string "$response" id)
   token=$(json_string "$response" completionToken)
+  play_url=$(json_string "$response" playUrl)
   case $id in s_*) ;; *) log "create session: unexpected response" && return ;; esac
+  case $play_url in "$BASE"/*) ;; *) log "create session: invalid play URL" && return ;; esac
 
   if [ "$(state_get "$state" prompt)" != "$prompt" ]; then
     # The agent finished while we were creating the session: never show it.
@@ -191,7 +204,7 @@ hook_start() {
   fi
   # Record the session before the window exists, so a Stop from here on always completes it.
   state_write "$state" phase=open "prompt=$prompt" "session=$id" "token=$token"
-  open_window "$BASE/goo?session=$id&popup=1"
+  open_window "$play_url&popup=1"
   [ "$(state_get "$state" prompt)" = "$prompt" ] &&
     state_write "$state" phase=open "prompt=$prompt" "session=$id" "token=$token" "window=$WINDOW_KIND"
 }
@@ -227,9 +240,12 @@ case "$COMMAND $SUB" in
   'hook start') hook_start "$(read_input)" 2>>"$LOG" ;;
   'hook stop' | 'hook end') hook_stop "$(read_input)" 2>>"$LOG" ;;
   'reap ') reap_after_completion 2>>"$LOG" ;;
-  'open '*) open_window "$BASE/goo?popup=1" ;;
+  'open '*)
+    url=$(practice_url) || { log "game $GAME_ID not found"; exit 1; }
+    open_window "$url"
+    ;;
   *)
-    printf 'Usage: afterprompt.sh hook start|stop [--agent name] | open\n' >&2
+    printf 'Usage: afterprompt.sh hook start|stop [--agent name] [--game id] | open [--game id]\n' >&2
     [ -z "$COMMAND" ] || exit 1
     ;;
 esac
