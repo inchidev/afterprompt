@@ -138,6 +138,19 @@ window_position() {
 
 # Opens the URL; sets WINDOW_KIND to `app` (chromeless window) or `tab`.
 open_window() {
+  if [ "$OS" = Darwin ] && /usr/bin/open -Ra AfterPrompt >/dev/null 2>&1; then
+    route=${1#"$BASE"/}
+    slug=${route%%\?*}
+    session=$(printf '%s' "$route" | sed -n 's/.*[?&]session=\([^&]*\).*/\1/p')
+    case $slug in '' | *[!a-z0-9-]*) slug= ;; esac
+    case $session in s_*) ;; *) session= ;; esac
+    if [ -n "$slug" ] && [ -n "$session" ] && /usr/bin/open "afterprompt://play/$slug?session=$session" >/dev/null 2>&1; then
+      WINDOW_KIND=desktop
+      log "opened AfterPrompt desktop app"
+      return
+    fi
+  fi
+
   browser=$(find_browser)
   if [ -n "$browser" ]; then
     window_position
