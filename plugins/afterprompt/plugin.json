@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "afterprompt",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A tiny physics game pops up when your coding agent takes longer than a minute, and closes when it is done.",
   "author": {
     "name": "inchi.dev",
@@ -23,10 +23,12 @@
         "websiteURL": "https://afterprompt.inchi.dev",
         "privacyPolicyURL": "https://afterprompt.inchi.dev/privacy",
         "termsOfServiceURL": "https://afterprompt.inchi.dev/terms",
+        "logo": "./assets/logo.png",
+        "composerIcon": "./assets/composer-icon.png",
         "defaultPrompt": [
           "Open an AfterPrompt practice game."
         ],
-        "brandColor": "#8B7CFF"
+        "brandColor": "#326BF8"
       }
     }
   }

@@ -1,0 +1,10 @@
+interface:
+  display_name: "AfterPrompt"
+  short_description: "Open a tiny game during longer work"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "afterprompt-dev"
+      description: "Open AfterPrompt games in a compact view"
+      transport: "streamable_http"
+      url: "https://dev.afterprompt.inchi.dev/mcp"

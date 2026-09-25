@@ -1,7 +1,7 @@
 {
   "name": "afterprompt",
   "displayName": "AfterPrompt",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A tiny physics game pops up when your agent takes longer than a minute, and closes when it's done.",
   "author": {
     "name": "inchi.dev"
