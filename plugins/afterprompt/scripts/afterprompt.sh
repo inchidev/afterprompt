@@ -14,7 +14,7 @@
 # Only the selected game ID, agent name, and timestamps leave your machine.
 # Prompts, code, and transcripts are never sent anywhere.
 
-BASE=$(printf '%s' "${AFTERPROMPT_URL:-https://afterprompt.inchi.dev}" | sed 's:/*$::')
+BASE=$(printf '%s' "${AFTERPROMPT_URL:-https://afterprompt.games}" | sed 's:/*$::')
 DELAY_SECONDS=${AFTERPROMPT_DELAY:-60}
 case $DELAY_SECONDS in '' | *[!0-9]*) DELAY_SECONDS=60 ;; esac
 HOME_DIR=${AFTERPROMPT_HOME:-$HOME/.afterprompt}

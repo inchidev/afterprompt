@@ -9,8 +9,15 @@ Quick answers never open anything: if the agent is done within the delay, no win
 **Claude Code**
 
 ```
-/plugin install afterprompt --marketplace inchidev/afterprompt
+/plugin marketplace add inchidev/afterprompt
+/plugin install afterprompt@inchidev
 ```
+
+**Claude Desktop (macOS)**
+
+1. Open **Settings → Plugins → Add → Add marketplace**.
+2. Choose **Add from a repository** and enter `https://github.com/inchidev/afterprompt`.
+3. Select **Sync**, then **AfterPrompt → Install**.
 
 **Codex macOS app**
 
@@ -23,7 +30,7 @@ These GitHub marketplace installs work before directory review. A public release
 
 For updates, Claude users can run `/plugin update afterprompt@inchidev` or enable auto-update for the `inchidev` marketplace under **Plugins → Marketplaces**. Codex users can upgrade the `inchidev` marketplace, restart the app, and accept the new plugin version.
 
-The hooks are a plain shell script that uses only `sh`, `curl`, and `sed`, which come with macOS and Linux. On macOS, install the optional native app from <https://github.com/inchidev/afterprompt/releases/latest> for a dedicated game window. Without it, the plugin keeps using its browser fallback. Windows is not supported yet.
+The hooks are a plain shell script that uses only `sh`, `curl`, and `sed`, which come with macOS and Linux. The optional native macOS app is built for Apple Silicon and Intel; its signed public installer is still being prepared. The plugin uses its browser fallback until the app is installed. Windows is not supported yet.
 
 ## How it works
 
@@ -36,7 +43,7 @@ The hooks are a plain shell script that uses only `sh`, `curl`, and `sed`, which
 
 State lives in `~/.afterprompt/`: one small file per agent session, a log, and a separate browser profile that keeps your game progress. Your everyday browser profile is never touched.
 
-**Privacy:** only the selected game ID, agent name (`claude` or `codex`), and timestamps are sent to `afterprompt.inchi.dev`. Prompts, code, file paths, and transcripts never leave your machine.
+**Privacy:** only the selected game ID, agent name (`claude` or `codex`), and timestamps are sent to `afterprompt.games`. Prompts, code, file paths, and transcripts never leave your machine.
 
 ## Settings
 
@@ -48,7 +55,7 @@ Set these environment variables, for example in the `env` block of `~/.claude/se
 | `AFTERPROMPT_GAME` | `goo` | ID of the game to open |
 | `AFTERPROMPT_DISABLE` | — | `1` turns the plugin off without uninstalling |
 | `AFTERPROMPT_BROWSER` | auto | Path to a Chromium-family browser binary |
-| `AFTERPROMPT_URL` | `https://afterprompt.inchi.dev` | Game server (for local development) |
+| `AFTERPROMPT_URL` | `https://afterprompt.games` | Game server (for local development) |
 | `AFTERPROMPT_HOME` | `~/.afterprompt` | Where state, logs, and the browser profile live |
 
-Ask Codex to “open the Goo AfterPrompt practice game” or “open Tree2048” at any time. The installed game IDs are `goo` and `tree2048`.
+Ask Codex to “open the Goo AfterPrompt practice game” or “open 2K48” at any time. The installed game IDs remain `goo` and `tree2048` for protocol compatibility.

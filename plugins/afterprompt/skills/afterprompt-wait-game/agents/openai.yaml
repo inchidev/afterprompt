@@ -4,7 +4,7 @@ interface:
 dependencies:
   tools:
     - type: "mcp"
-      value: "afterprompt-dev"
+      value: "afterprompt"
       description: "Open AfterPrompt games in a compact view"
       transport: "streamable_http"
-      url: "https://dev.afterprompt.inchi.dev/mcp"
+      url: "https://afterprompt.games/mcp"

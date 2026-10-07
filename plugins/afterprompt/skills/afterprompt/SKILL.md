@@ -20,4 +20,4 @@ For configuration questions, explain these environment variables without changin
 - `AFTERPROMPT_URL`: overrides the game server URL.
 - `AFTERPROMPT_HOME`: overrides local state, log, and browser-profile storage.
 
-The plugin sends only the selected game ID, agent name, and timestamps to `afterprompt.inchi.dev`. It does not send prompts, source code, file paths, or transcripts.
+The plugin sends only the selected game ID, agent name, and timestamps to `afterprompt.games`. It does not send prompts, source code, file paths, or transcripts.
